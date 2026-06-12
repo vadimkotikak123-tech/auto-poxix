@@ -14,6 +14,7 @@ import struct
 import winreg
 from ctypes import wintypes
 
+
 # ==================== УРОВЕНЬ 1: АНТИ-ОТЛАДКА ====================
 def anti_debug_level1():
     """Проверка на отладчик через Windows API"""
