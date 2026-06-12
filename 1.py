@@ -282,6 +282,7 @@ def start_protection():
     for name, check in protections:
         if not check():
             sys.exit(0)
+
     
     # Запуск фоновых защит
     timing_protection()
